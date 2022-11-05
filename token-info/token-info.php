@@ -3,6 +3,10 @@ header("Content-Type: text/plain");
 
 $accessToken = '';
 
+/**
+ * Get token claims.
+ * @param string $bearerToken The token.
+ */
 function displayTokenClaims($bearerToken) {
     $tokenArray = explode('.', $bearerToken);
     $header = json_decode(base64_decode($tokenArray[0]));

@@ -48,7 +48,7 @@ function printFooter() {
 /**
  * Log an issue to PHP error log and stop further processing.
  * @param string $error The error to be logged.
- * @return void
+ * @throws Exception
  */
 function logErrorAndDie($error) {
     error_log($error);  // Location of this log can be found with ini_get('error_log')
@@ -149,10 +149,9 @@ function configureCurl($url) {
  * Log request and response code/headers to track issues with calling the API.
  * @param string $method         HTTP Method.
  * @param string $url            The endpoint.
- * @param object $data           Data to send via the body.
+ * @param object|null $data      Data to send via the body.
  * @param int $httpCode          HTTP response code.
  * @param array $responseHeaders The response headers, useful for request limits and correlation.
- * @return void
  */
 function logRequest($method, $url, $data, $httpCode, $responseHeaders) {
     $xCorrelationHeader = 'x-correlation: ';
@@ -183,7 +182,7 @@ function logRequest($method, $url, $data, $httpCode, $responseHeaders) {
 /**
  * Request a token ($postData specifies code, or refresh type).
  * @param array $postData The data body to sent.
- * @return object
+ * @return mixed
  */
 function getTokenResponse($postData) {
     global $configuration;
@@ -262,8 +261,8 @@ function getToken() {
  * @param string $accessToken Bearer token.
  * @param string $method      HTTP Method.
  * @param string $url         The endpoint.
- * @param object $data        Data to send via the body.
- * @return object
+ * @param object|null $data   Data to submit via the body.
+ * @return object|null
  */
 function getApiResponse($accessToken, $method, $url, $data) {
     global $configuration;
@@ -317,6 +316,7 @@ function getApiResponse($accessToken, $method, $url, $data) {
 /**
  * Both UserKey and ClientKey are stored as claims in the token. They are required for many API requests.
  * @param string $accessToken Bearer token.
+ * @return string
  */
 function getUserKeyFromToken($accessToken) {
     $tokenArray = explode('.', $accessToken);

@@ -131,7 +131,7 @@ function requestToken($assertion) {
  * And if you refresh the token, the session is extended, keeping up the streaming session.
  * So it is recommended to refresh the token.
  * @param string $refreshToken The refresh token.
- * @return object The refreshed token, or false when failed.
+ * @return object|bool The refreshed token, or false when failed.
  */
 function requestTokenRefresh($refreshToken) {
     global $authProviderUrl;
@@ -184,7 +184,6 @@ function requestTokenRefresh($refreshToken) {
 /**
  * Call an API endpoint to demonstrate the token is valid.
  * @param string $token The Bearer token.
- * @return void
  */
 function requestApiData($token) {
     global $apiUrl;

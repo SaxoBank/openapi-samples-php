@@ -11,7 +11,6 @@ $openApiBaseUrl = 'https://gateway.saxobank.com/sim/openapi';
  * @param object $data           Data to send via the body.
  * @param int $httpCode          HTTP response code.
  * @param array $responseHeaders The response headers, useful for request limits and correlation.
- * @return void
  */
 function logRequest($method, $url, $data, $httpCode, $responseHeaders) {
     $xCorrelationHeader = 'x-correlation: ';
@@ -79,7 +78,6 @@ function processErrorResponse($error) {
 /**
  * Log an issue to PHP error log and stop further processing.
  * @param string $error The error to be logged.
- * @return void
  */
 function logErrorAndDie($error) {
     error_log($error);  // Location of this log can be found with ini_get('error_log')
@@ -88,10 +86,10 @@ function logErrorAndDie($error) {
 
 /**
  * Configure the CURL options with SSL verification, GZip compression and HTTP2.
- * @param string $method                    HTTP Method.
- * @param string $url                       The endpoint.
- * @param object $data                      Data to send via the body.
- * @param object $isRequestIdHeaderRequired When true, include a unique numer to prevent 409 Conflict error when two identical orders are placed within 15 seconds.
+ * @param string $method                  HTTP Method.
+ * @param string $url                     The endpoint.
+ * @param object $data                    Data to submit via the body.
+ * @param bool $isRequestIdHeaderRequired When true, include a unique numer to prevent 409 Conflict error when two identical orders are placed within 15 seconds.
  * @return object
  */
 function configureCurlRequest($method, $url, $data = null, $isRequestIdHeaderRequired = false) {
@@ -129,11 +127,11 @@ function configureCurlRequest($method, $url, $data = null, $isRequestIdHeaderReq
 
 /**
  * Call an endpoint of the OpenAPI.
- * @param string $method                    HTTP Method.
- * @param string $url                       The endpoint.
- * @param object $data                      Data to send via the body.
- * @param object $isRequestIdHeaderRequired When true, include a unique numer to prevent 409 Conflict error when two identical orders are placed within 15 seconds.
- * @return object
+ * @param string $method                  HTTP Method.
+ * @param string $url                     The endpoint.
+ * @param object $data                    Data to submit via the body.
+ * @param bool $isRequestIdHeaderRequired When true, include a unique number to prevent 409 Conflict error when two identical orders are placed within 15 seconds.
+ * @return object|null
  */
 function getApiResponse($method, $url, $data = null, $isRequestIdHeaderRequired = false) {
     $ch = configureCurlRequest($method, $url, $data, $isRequestIdHeaderRequired);
@@ -192,7 +190,6 @@ function getUicByIsin($isin, $assetTypes) {
  * Place the actual order.
  * @param string $uic       The Saxobank id of the instrument.
  * @param string $assetType The instrument type.
- * @return string
  */
 function placeOrder($uic, $assetType) {
     global $accountKey;

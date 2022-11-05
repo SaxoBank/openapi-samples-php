@@ -11,7 +11,6 @@ $openApiBaseUrl = 'https://gateway.saxobank.com/sim/openapi';
  * @param object $data           Data to send via the body.
  * @param int $httpCode          HTTP response code.
  * @param array $responseHeaders The response headers, useful for request limits and correlation.
- * @return void
  */
 function logRequest($method, $url, $data, $httpCode, $responseHeaders) {
     $xCorrelationHeader = 'x-correlation: ';
@@ -79,13 +78,14 @@ function processErrorResponse($error) {
 /**
  * Log an issue to PHP error log and stop further processing.
  * @param string $error The error to be logged.
- * @return void
+ * @return null
  */
 function logErrorAndDie($error) {
     error_log($error);  // Location of this log can be found with ini_get('error_log')
     // This function should die after an unsuccessful request. But for this demo, it doesn't.
     //die($error);
     echo $error . PHP_EOL;
+    return null;
 }
 
 /**
@@ -135,7 +135,7 @@ function configureCurlRequest($method, $url, $data = null, $isRequestIdHeaderReq
  * @param string $url                       The endpoint.
  * @param object $data                      Data to send via the body.
  * @param object $isRequestIdHeaderRequired When true, include a unique numer to prevent 409 Conflict error when two identical orders are placed within 15 seconds.
- * @return object
+ * @return object|null
  */
 function getApiResponse($method, $url, $data = null, $isRequestIdHeaderRequired = false) {
     $ch = configureCurlRequest($method, $url, $data, $isRequestIdHeaderRequired);

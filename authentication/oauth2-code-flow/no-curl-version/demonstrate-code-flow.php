@@ -50,7 +50,7 @@ function printFooter() {
 /**
  * Log an issue to PHP error log and stop further processing.
  * @param string $error The error to be logged.
- * @return void
+ * @throws Exception
  */
 function logErrorAndDie($error) {
     error_log($error);  // Location of this log can be found with ini_get('error_log')
@@ -126,10 +126,10 @@ function checkCsrfToken() {
 
 /**
  * Create the context for the HTTP request, including SSL verification.
- * @param string $method HTTP Method.
- * @param string $header The endpoint.
- * @param object $data   Data to send via the body.
- * @return object
+ * @param string $method    HTTP Method.
+ * @param array $header     The endpoint.
+ * @param string|null $data Data to submit via the body.
+ * @return array
  */
 function createRequestContext($method, $header, $data) {
     $http = array(
@@ -156,7 +156,6 @@ function createRequestContext($method, $header, $data) {
  * @param string $url            The endpoint.
  * @param array $context         Request context.
  * @param array $responseHeaders The response headers, useful for request limits and correlation.
- * @return void
  */
 function logRequest($url, $context, $responseHeaders) {
     global $configuration;
@@ -190,7 +189,7 @@ function logRequest($url, $context, $responseHeaders) {
  * Request data from Saxo.
  * @param string $url    The endpoint.
  * @param array $context Request context.
- * @return object
+ * @return object|null
  */
 function doRequest($url, $context) {
     $result = @file_get_contents($url, false, stream_context_create($context));
@@ -261,6 +260,7 @@ function getToken() {
 /**
  * Both UserKey and ClientKey are stored as claims in the token. They are required for many API requests.
  * @param string $accessToken Bearer token.
+ * @return string
  */
 function getUserKeyFromToken($accessToken) {
     $tokenArray = explode('.', $accessToken);

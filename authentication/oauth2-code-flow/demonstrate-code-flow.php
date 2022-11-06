@@ -133,7 +133,7 @@ function configureCurl($url) {
     curl_setopt_array($ch, [
         CURLOPT_FAILONERROR    => false,  // Required for HTTP error codes to be reported via call to curl_error($ch)
         CURLOPT_SSL_VERIFYPEER => true,  // false to stop cURL from verifying the peer's certificate.
-        CURLOPT_CAINFO         => __DIR__ . '/cacert-2022-07-19.pem',  // This Mozilla CA certificate store was generated at Tue Jul 19 03:12:06 2022 GMT and is downloaded from https://curl.haxx.se/docs/caextract.html
+        CURLOPT_CAINFO         => __DIR__ . '/cacert-2022-10-11.pem',  // This Mozilla CA certificate store was generated at Tue Jul 19 03:12:06 2022 GMT and is downloaded from https://curl.haxx.se/docs/caextract.html
         CURLOPT_SSL_VERIFYHOST => 2,  // 2 to verify that a Common Name field or a Subject Alternate Name field in the SSL peer certificate matches the provided hostname.
         CURLOPT_FOLLOWLOCATION => false,  // true to follow any "Location: " header that the server sends as part of the HTTP header.
         CURLOPT_RETURNTRANSFER => true,  // true to return the transfer as a string of the return value of curl_exec() instead of outputting it directly.
@@ -251,6 +251,43 @@ function getToken() {
 }
 
 /**
+ * Show a message for the user to indicate what happened.
+ * @param object $error HTTP Method.
+ * @return string
+ */
+function processErrorResponse($error) {
+    if (isset($error->ErrorInfo)) {
+        $error = $error->ErrorInfo;
+    }
+    $result = $error->Message;
+    if (isset($error->ModelState)) {
+        foreach ($error->ModelState as $modelState)  {
+            $result .= "\n" . $modelState[0];
+        }
+    }
+    /*
+    {
+    "ErrorCode": "IllegalInstrumentId",
+    "Message": "Instrument-ID is ongeldig"
+    }
+
+    {
+    "Message": "One or more properties of the request are invalid!",
+    "ModelState": {
+    "AssetType": [
+    "'Asset Type' must not be empty."
+    ],
+    "OrderDuration": [
+    "The specified condition was not met for 'Order Duration'."
+    ]
+    },
+    "ErrorCode": "InvalidModelState"
+    }
+     */
+    return $result;
+}
+
+/**
  * Return an API response, if any.
  * @param string $accessToken Bearer token.
  * @param string $method      HTTP Method.
@@ -271,7 +308,6 @@ function getApiResponse($accessToken, $method, $url, $data) {
     curl_setopt_array($ch, array(
         CURLOPT_CUSTOMREQUEST => $method,  // A custom request method to use instead of "GET" or "HEAD" when doing a HTTP request. This is useful for doing "DELETE" or other, more obscure HTTP requests. Valid values are things like "GET", "POST", "CONNECT" and so on; i.e.
         CURLOPT_HEADER        => true,  // true to include the header in the output.
-        CURLOPT_ENCODING      => 'gzip',  // This enables decoding of the response. Supported encodings are "identity", "deflate", and "gzip". If an empty string is set, a header containing all supported encoding types is sent.
         CURLOPT_HTTPHEADER    => $header  // An array of HTTP header fields to set, in the format array('Content-type: text/plain', 'Content-length: 100')
     ));
     $response = curl_exec($ch);

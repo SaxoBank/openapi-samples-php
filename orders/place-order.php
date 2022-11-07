@@ -170,7 +170,7 @@ function getApiResponse($method, $url, $data = null, $isRequestIdHeaderRequired 
 
 /**
  * Get the Uic of an instrument by its ISIN.
- * @param string $isin The ISIN.
+ * @param string $isin       The ISIN.
  * @param string $assetTypes One or more asset types, separated by comma.
  * @return string
  */

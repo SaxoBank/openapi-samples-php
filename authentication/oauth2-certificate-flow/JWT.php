@@ -11,6 +11,13 @@
 
 class JWT
 {
+    /**
+     * Encode the JWT
+     * @param string $payload This payload part.
+     * @param string $key The key part.
+     * @param string $header The header.
+     * @return string
+     */
     public static function encode($payload, $key, $header)
     {
         $segments = array(
@@ -26,6 +33,13 @@ class JWT
         return implode('.', $segments);
     }
 
+    /**
+     * Decode the JWT
+     * @param string $jwt This JWT.
+     * @param string|null $key The key part.
+     * @param string|null $algo The header.
+     * @return mixed
+     */
     public static function decode($jwt, $key = null, $algo = null)
     {
         $tks = explode('.', $jwt);

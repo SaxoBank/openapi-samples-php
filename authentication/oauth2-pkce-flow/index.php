@@ -54,7 +54,7 @@ function generateRandomToken($keyspace, $length) {
 /**
  * The CSRF token is saved in the session, so it can be compared with the CSRF token coming from the state after a redirect.
  * @param string $codeVerifier The code verifier to use to hash the code.
- * @param string $csrfToken The token to verify the redirect origin.
+ * @param string $csrfToken    The token to verify the redirect origin.
  */
 function addVerifiersToSession($codeVerifier, $csrfToken) {
     // Store the new CSRF van Verification tokens in the session, so it can be used after the redirect.
@@ -78,7 +78,7 @@ function base64url_encode($text) {
  * Construct the URL for a new login.
  * @param string $codeVerifier The verifier used to create the challenge.
  * @param string $csrfToken    The token to verify the redirect origin.
- * @param string $data Some data to submit, where $_SESSION can be used as well - added for demonstration purposes.
+ * @param string $data         Some data to submit, where $_SESSION can be used as well - added for demonstration purposes.
  * @return string
  */
 function generateUrl($codeVerifier, $csrfToken, $data) {

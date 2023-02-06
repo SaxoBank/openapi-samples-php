@@ -44,7 +44,7 @@ function generateRandomToken($keyspace, $length) {
         return bin2hex(random_bytes($length));
     }
     $pieces = [];
-    $max = mb_strlen($keyspace, '8bit') - 1;
+    $max = strlen($keyspace) - 1;
     for ($i = 0; $i < $length; ++$i) {
         $pieces []= $keyspace[random_int(0, $max)];
     }

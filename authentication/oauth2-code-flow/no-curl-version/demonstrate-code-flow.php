@@ -333,7 +333,7 @@ function refreshToken($refreshToken) {
     return $responseJson;
 }
 
-session_start(['use_strict_mode' => true, 'cookie_httponly' => true]);  // The CSRF token is stored in the session.
+session_start();  // The CSRF token is stored in the session.
 printHeader();
 try {
     checkForErrors();

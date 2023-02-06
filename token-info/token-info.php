@@ -17,7 +17,7 @@ function displayTokenClaims($accessToken) {
     echo 'UserKey: ' . $payload->uid . PHP_EOL;
     echo 'ClientKey: ' . $payload->cid . PHP_EOL;
     $expirationDateTime = new DateTime("@$payload->exp", new DateTimeZone('UTC'));
-    $now = new DateTime(null, new DateTimeZone('UTC'));
+    $now = new DateTime('now', new DateTimeZone('UTC'));
     echo 'Expiration Time (UTC): ' . $expirationDateTime->format('Y-m-d H:i:s') . ' (' . $expirationDateTime->getTimestamp() - $now->getTimestamp() . ' seconds remaining)' . PHP_EOL;
 }
 

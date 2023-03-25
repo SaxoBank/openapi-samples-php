@@ -20,7 +20,7 @@ $accessToken = 'eyJ0eXAiOiJKV1QiLCJraWQiOiJnVVRBa3hiL3pVRTg2OVMxcTdDOGxXUytyUms9
  * https://github.com/ritou/php-Akita_OpenIDConnect/blob/master/src/Akita/OpenIDConnect/Util/Base64.php
  * @param string $str The string to encode
  */
-function base64_urlEncode($str) {
+function base64UrlEncode($str) {
     $enc = base64_encode($str);
     $enc = rtrim($enc, '=');
     $enc = strtr($enc, '+/', '-_');
@@ -28,7 +28,7 @@ function base64_urlEncode($str) {
 }
 
 /**
- * This function extracts the hash algo and doews the hashing
+ * This function extracts the hash algo and does the hashing
  * @param string $str The string to hash
  */
 function getHash($str, $headerString) {
@@ -38,7 +38,7 @@ function getHash($str, $headerString) {
     echo 'Supplied hash algo in header ' . $header->alg . ' makes algo ' . $hashAlgorithm . '<br />';
     $hash = hash($hashAlgorithm, $str, true);
     $hashHalf = substr($hash, 0, strlen($hash) / 2);
-    return base64_urlEncode($hashHalf);
+    return base64UrlEncode($hashHalf);
 }
 
 /**
@@ -59,7 +59,7 @@ function validateCode() {
     }
     $payload = json_decode(base64_decode($tokenArray[1]));
     if (!isset($payload->c_hash)) {
-        echo 'The c_hash is not available in the token. Is the token requested with a code? Or is it a refreshed token?<br /><br />';
+        echo 'The c_hash claim is not available in the token. Is the token requested with a code? Or is it a refreshed token?<br /><br />';
         return;
     }
     $hash = getHash($code, $tokenArray[0]);
@@ -89,7 +89,7 @@ function validateState() {
     }
     $payload = json_decode(base64_decode($tokenArray[1]));
     if (!isset($payload->s_hash)) {
-        echo 'The s_hash is not available in the token. Is a state supplied in the redirect URL?<br /><br />';
+        echo 'The s_hash claim is not available in the token. Is a state supplied in the redirect URL?<br /><br />';
         return;
     }
     $hash = getHash($state, $tokenArray[0]);
@@ -121,7 +121,7 @@ function validateToken() {
     }
     $payload = json_decode(base64_decode($tokenArray[1]));
     if (!isset($payload->at_hash)) {
-        echo 'The at_hash is not available in the token. Is this a JWT token?<br /><br />';
+        echo 'The at_hash claim is not available in the token. Is this a JWT token?<br /><br />';
         return;
     }
     $hash = getHash($idToken, $tokenArray[0]);

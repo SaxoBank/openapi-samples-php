@@ -42,6 +42,38 @@ function getHash($str, $headerString) {
 }
 
 /**
+ * Access Token hash value.
+ * Its value is the base64url encoding of the left-most half of the hash of the octets of the ASCII representation of the access_token value,
+ * where the hash algorithm used is the hash algorithm used in the alg Header Parameter of the ID Token's JOSE Header.
+ * For instance, if the alg is RS256, hash the access_token value with SHA-256, then take the left-most 128 bits and base64url encode them.
+ * The at_hash value is a case sensitive string.
+ * If the ID Token is issued from the Authorization Endpoint with an access_token value, which is the case for the response_type value code id_token token,
+ * this is REQUIRED; otherwise, its inclusion is OPTIONAL.
+ */
+function validateToken() {
+    global $accessToken;
+    global $idToken;
+    $tokenArray = explode('.', $accessToken);
+    if (count($tokenArray) !== 3) {
+        die('Invalid token.');
+    }
+    $payload = json_decode(base64_decode($tokenArray[1]));
+    if (!isset($payload->at_hash)) {
+        echo 'The at_hash claim is not available in the token. Is this a JWT token?<br /><br />';
+        return;
+    }
+    $hash = getHash($idToken, $tokenArray[0]);
+    echo 'Claim at_hash: ' . $payload->at_hash . '<br />';
+    echo 'Hashed id_token: ' . $hash . '<br />';
+    echo (
+        $payload->at_hash === $hash
+        ? 'The at_hash claim matches with the hashed id_token. Valid!'
+        : 'There is an issue with this token. Don\'t trust it!'
+    );
+    echo '<br /><br />';
+}
+
+/**
  * Code hash value.
  * Its value is the base64url encoding of the left-most half of the hash of the octets of the ASCII representation of the code value,
  * where the hash algorithm used is the hash algorithm used in the alg Header Parameter of the ID Token's JOSE Header.
@@ -63,12 +95,12 @@ function validateCode() {
         return;
     }
     $hash = getHash($code, $tokenArray[0]);
-    echo 'c_hash claim: ' . $payload->c_hash . '<br />';
+    echo 'Claim c_hash: ' . $payload->c_hash . '<br />';
     echo 'Hashed code: ' . $hash . '<br />';
     echo (
         $payload->c_hash === $hash
         ? 'The c_hash claim matches with the hashed code. Valid!'
-        : 'There is an issue with this token. Don\'t trust it!'
+        : 'There is a mismatch between code and token. Don\'t trust it!'
     );
     echo '<br /><br />';
 }
@@ -93,48 +125,16 @@ function validateState() {
         return;
     }
     $hash = getHash($state, $tokenArray[0]);
-    echo 's_hash claim: ' . $payload->s_hash . '<br />';
+    echo 'Claim s_hash: ' . $payload->s_hash . '<br />';
     echo 'Hashed state: ' . $hash . '<br />';
     echo (
         $payload->s_hash === $hash
         ? 'The s_hash claim matches with the hashed state. Valid!'
-        : 'There is an issue with this token. Don\'t trust it!'
+        : 'There is a mismatch between state and token. Don\'t trust it!'
     );
     echo '<br /><br />';
 }
 
-/**
- * Access Token hash value.
- * Its value is the base64url encoding of the left-most half of the hash of the octets of the ASCII representation of the access_token value,
- * where the hash algorithm used is the hash algorithm used in the alg Header Parameter of the ID Token's JOSE Header.
- * For instance, if the alg is RS256, hash the access_token value with SHA-256, then take the left-most 128 bits and base64url encode them.
- * The at_hash value is a case sensitive string.
- * If the ID Token is issued from the Authorization Endpoint with an access_token value, which is the case for the response_type value code id_token token,
- * this is REQUIRED; otherwise, its inclusion is OPTIONAL.
- */
-function validateToken() {
-    global $accessToken;
-    global $idToken;
-    $tokenArray = explode('.', $accessToken);
-    if (count($tokenArray) !== 3) {
-        die('Invalid token.');
-    }
-    $payload = json_decode(base64_decode($tokenArray[1]));
-    if (!isset($payload->at_hash)) {
-        echo 'The at_hash claim is not available in the token. Is this a JWT token?<br /><br />';
-        return;
-    }
-    $hash = getHash($idToken, $tokenArray[0]);
-    echo 'at_hash claim: ' . $payload->at_hash . '<br />';
-    echo 'Hashed id_token: ' . $hash . '<br />';
-    echo (
-        $payload->at_hash === $hash
-        ? 'The at_hash claim matches with the hashed id_token. Valid!'
-        : 'There is an issue with this token. Don\'t trust it!'
-    );
-    echo '<br /><br />';
-}
-
+validateToken();
 validateCode();
 validateState();
-validateToken();
